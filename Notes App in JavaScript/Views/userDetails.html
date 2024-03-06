@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<!-- Coding By CodingNepal - youtube.com/codingnepal -->
+<html lang="en" dir="ltr">
+
+<head>
+  <meta charset="utf-8">
+  <title>Notes App in JavaScript | CodingNepal</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Iconscout Link For Icons -->
+  <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
+  <style>
+    /* Add your CSS styles here */
+    .wrapper {
+      display: flex;
+      flex-wrap: wrap;
+    }
+
+    #notes-container {
+      list-style-type: none;
+      padding: 0;
+      display: flex;
+      flex-wrap: wrap;
+    }
+
+    .note {
+      width: calc(25% - 20px); /* Adjust the width to fit 4 notes in one line */
+      margin-right: 20px; /* Add space between each note */
+      margin-bottom: 20px;
+      border: 1px solid #ccc;
+      padding: 10px;
+      box-sizing: border-box;
+    }
+
+    .note:last-child {
+      margin-right: 0;
+    }
+
+    /* Popup box styles */
+    
+
+    .popup-box.show {
+      display: block;
+    }
+
+    .popup-box header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .popup-box input,
+    .popup-box textarea,
+    .popup-box button {
+      display: block;
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 10px;
+      border: 1px solid #ccc;
+      box-sizing: border-box;
+    }
+
+    .popup-box button {
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+    }
+
+    /* Message container styles */
+    #success-container,
+    #error-container {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 9999; /* Make sure it appears above other content */
+  background-color: #d9534f; /* Red */
+  color: white;
+  padding: 20px;
+  border-radius: 5px;
+}
+
+    #success-container {
+      background-color: #5cb85c; /* Green */
+      color: white;
+    }
+
+    #error-container {
+      background-color: #d9534f; /* Red */
+      color: white;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrapper">
+    <ul id="notes-container"></ul>
+    <li class="add-box">
+      <div class="icon"><i class="uil uil-plus"></i></div>
+      <p>Add new note</p>
+    </li>
+  </div>
+
+  <!-- Success message container -->
+  <div id="success-container"></div>
+
+  <!-- Error message container -->
+  <div id="error-container"></div>
+
+  <!-- Popup box for adding a new note -->
+  <body>
+    <div class="popup-box" id="popupBox">
+        <div class="popup">
+            <div class="content">
+                <header>
+                    <p></p>
+                    <i class="uil uil-times"></i>
+                </header>
+                <form action="#" id="noteForm">
+                    <div class="row title">
+                        <label>Title</label>
+                        <input id="subject" type="text" spellcheck="false">
+                    </div>
+                    <div class="row description">
+                        <label>Description</label>
+                        <textarea id="body" spellcheck="false"></textarea>
+                    </div>
+                    <button id="updateButton">Update</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+  <div id="fetchedData">
+    <p id="responseData"><p>
+  </div>
+
+<script>
+    document.getElementById("noteForm").addEventListener("submit", function(event) {
+      event.preventDefault(); // Prevent the default form submission
+
+      let subject = document.getElementById("subject").value;
+      let body = document.getElementById("body").value;
+      let user_id = 5;
+
+      let formData = new FormData();
+      formData.append("subject", subject);
+      formData.append("body", body);
+      formData.append("user_id", user_id);
+
+      fetch("http://localhost:9080/gnotes/api/v1/note/add", {
+          method: "POST",
+          body: new URLSearchParams(formData),
+          headers: {
+            "User-Agent": "Mozilla/5.0",
+            "Content-Type": "application/x-www-form-urlencoded"
+          }
+        })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error("Login failed. Please try again.");
+          }
+          return response.text(); // Convert response to text
+        })
+        .then(data => {
+          // Check the response data to determine user role
+          if (data.includes("true")) {
+            // If user is admin, display success message
+            document.getElementById("success-container").textContent = "Note added successfully!";
+            document.getElementById("success-container").style.display = "block";
+            // Hide the success message after a short delay
+            setTimeout(() => {
+              document.getElementById("success-container").style.display = "none";
+            }, 1500);
+          } else {
+            // If response is not recognized, display error message
+            document.getElementById("error-container").textContent = "Failed to add note.";
+            document.getElementById("error-container").style.display = "block";
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          // Display error message if there is an error in the fetch request
+          document.getElementById("error-container").textContent = "An error occurred.";
+          document.getElementById("error-container").style.display = "block";
+        });
+    });
+  </script>
+  <script>        // Function to parse URL query parameters
+    function getUrlParameter(name) {
+        name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+        var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+        var results = regex.exec(location.search);
+        return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+    };
+
+    // Get user ID from URL query parameter
+    var userId = getUrlParameter('id');
+
+    // Display user ID
+    document.getElementById('user-id').textContent = `User ID: ${userId}`;</script>
+<script>
+    var parameterValue = userId; // Example parameter value
+</script>
+
+  <script src="../js/script_2.js"></script>
+</body>
+</html>

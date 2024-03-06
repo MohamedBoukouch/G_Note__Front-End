@@ -1,0 +1,114 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign up | OUTAMA</title>
+    <link rel="shortcut icon" type="image/icon" href="images/favicon-16x16.png"/>
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Nunito:300,400,600,700">
+    <link rel="stylesheet" href="../css/bootstrap-reboot.css"/>
+    <link rel="stylesheet" href="../css/bootstrap-grid.css"/>
+    <link rel="stylesheet" href="../css/app.css"/>
+</head>
+<body>
+<div class="container-fluid">
+
+    <div class="row">
+        <div class="col-lg-4 col-md-6 col-sm-8 offset-lg-4 offset-md-3 offset-sm-2">
+            <!-- brand-logo start -->
+            <div class="sign__logo text-center">
+                <img src="../images/logo.svg" width="120" alt="brand-logo">
+            </div><!-- ./brand-logo -->
+            <!-- authfy-login start -->
+            <div class="sign__card">
+                <!-- panel-login start -->
+                <div class="sign__panel text-center active">
+                    <div class="sign__heading mb-4">
+                        <h3 class="sign__title">Sign up for free!</h3>
+                    </div>
+                    <div id="fetchedData">
+                      <p id="responseData"></p>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12">
+                          <form action="" method="post" id="signupform">
+                            <div class="form-group">
+                                <input type="text" class="form-control __lg __wt" name="email" placeholder="Email" id="email">
+                            </div>
+                            <div class="form-group">
+                                <div class="password__mask">
+                                    <input type="password" class="form-control __lg __wt" name="password" placeholder="Password" id="password">
+                                    <span class="password__toggle"></span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                              <div class="password__mask">
+                                  <input type="password" class="form-control __lg __wt" name="confirmpassword" placeholder="Confirme Password" id="confirmpassword">
+                                  <span class="password__toggle"></span>
+                              </div>
+                          </div>
+                            <div class="form-group">
+                                <p class="terms__policy">I agree to the <a href="#">privacy policy</a> and <a href="#">terms of service</a>.</p>
+                            </div>
+                            <div class="form-group">
+                                <button class="btn btn-lg btn-primary btn-block" type="submit">Sign up</button>
+                            </div>
+                        </form>
+                            <a href="SignIn.html">Already have an account?</a>
+                        </div>
+                    </div>
+                </div>
+            </div> <!-- ./authfy-login -->
+        </div>
+    </div> <!-- ./row -->
+</div>
+
+<script>
+  document.getElementById("signupform").addEventListener("submit", function(event) {
+      event.preventDefault(); // Prevent the default form submission
+
+      // Get the values of email and password fields
+ 
+      let email = document.getElementById("email").value;
+      let password = document.getElementById("password").value;
+
+      // Construct form data
+      let formData = new FormData();
+      formData.append("email", email);
+      formData.append("password", password);
+    //   formData.append("confirmpassword", confirmpassword);
+
+      // Fetch request
+      fetch("http://localhost:9080/gnotes/api/v1/user/signup", { 
+          method: "POST",
+          body: new URLSearchParams(formData), // Convert FormData to URLSearchParams
+          headers: {
+              "User-Agent": "Mozilla/5.0",
+              "Content-Type": "application/x-www-form-urlencoded"
+          }
+      })
+      .then(response => response.text())
+      .then(data => {
+          // // Check if the response data indicates success
+          if (data.trim() === "Signup successful") {
+
+            document.getElementById("responseData").textContent = data;
+            document.getElementById("responseData").style.color = "green";
+
+          } else {
+            document.getElementById("responseData").textContent = data;
+            document.getElementById("responseData").style.color = "red";
+          }
+      })
+      .catch(error => {
+          console.error('Error:', error);
+          // Display error message if there is an error in the fetch request
+          document.getElementById("responseData").textContent = "An error occurred. Please try again later.";
+      });
+  });
+</script>
+
+</body>
+</html>
+

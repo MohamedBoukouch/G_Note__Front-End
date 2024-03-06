@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AdminHub</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Boxicons -->
+    <link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
+    
+    <!-- My CSS -->
+    <link rel="stylesheet" href="../css/style_2.css">
+</head>
+<body>
+    <!-- CONTENT -->
+    <section id="content">
+        <!-- MAIN -->
+        <main>
+            <div class="head-title">
+                <div class="left">
+                    <h1>Dashboard</h1>
+                    <ul class="breadcrumb">
+                        <li></li>
+                    </ul>
+                </div>
+            </div>
+
+            <ul class="box-info">
+                <li>
+                    <i class='bx bxs-group' ></i>
+                    <span class="text">
+                        <h3>2834</h3>
+                        <p>Visitors</p>
+                    </span>
+                </li>
+                <li>
+                    <i class='bx bxs-dollar-circle' ></i>
+                    <span class="text">
+                        <h3>$2543</h3>
+                        <p>Total Sales</p>
+                    </span>
+                </li>
+            </ul>
+
+            <div class="table-data">
+                <div class="order">
+                    <div class="head">
+                        <h3>Recent Orders</h3>
+                        <i class='bx bx-search' ></i>
+                        <i class='bx bx-filter' ></i>
+                    </div>
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>User</th>
+                                <th>Email</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                                <th>Verification</th>
+                            </tr>
+                        </thead>
+                        <tbody id="notes-container">
+                            <!-- User data will be inserted here -->
+                        </tbody>
+                    </table>
+                </div>
+                <!-- Remaining code for "todo" section -->
+            </div>
+        </main>
+        <!-- MAIN -->
+    </section>
+    <!-- CONTENT -->
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const notesContainer = document.getElementById("notes-container");
+
+            // Function to fetch users
+            function fetchUsers() {
+                fetch('http://localhost:9080/gnotes/api/v1/user/selectallusers', {
+                    method: 'POST'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    displayUsers(data);
+                })
+                .catch(error => console.error('Error fetching users:', error));
+            }
+
+            // Function to display users
+            function displayUsers(users) {
+                notesContainer.innerHTML = ""; // Clear existing users
+                users.forEach(user => {
+                    const tr = document.createElement("tr");
+
+                    const tdUser = document.createElement("td");
+                    // Add click event to open new page with user ID
+                    tdUser.innerHTML = `<p>${user.id}</p>`;
+                    tdUser.onclick = () => navigateToUserPage(user.id); // Add click event
+                    // Display user ID and email
+
+                    const tdEmail = document.createElement("td");
+                    tdEmail.textContent = user.email; // Display user email
+
+                    const tdStatus = document.createElement("td");
+                    const span = document.createElement("span");
+                    span.textContent = user.isverify ? "Verified" : "Not Verified"; // Display user verification status
+                    span.classList.add(user.isverify ? "text-success" : "text-danger");
+                    tdStatus.appendChild(span);
+
+                    const tdAction = document.createElement("td");
+                    const button = document.createElement("button");
+                    button.textContent = "Delete";
+                    button.className = "btn btn-danger";
+                    button.onclick = () => deleteUser(user.id);
+                    tdAction.appendChild(button);
+
+                    // New column for verification button
+                    const tdVerification = document.createElement("td");
+                    const verificationButton = document.createElement("button");
+                    verificationButton.textContent = user.isverify ? "Is Verified" : "Not Verified";
+                    verificationButton.className = user.isverify ? "btn btn-success" : "btn btn-warning";
+                    verificationButton.onclick = () => toggleVerification(user.id, user.isverify);
+                    tdVerification.appendChild(verificationButton);
+
+                    tr.appendChild(tdUser);
+                    tr.appendChild(tdEmail);
+                    tr.appendChild(tdStatus);
+                    tr.appendChild(tdAction);
+                    tr.appendChild(tdVerification);
+
+                    notesContainer.appendChild(tr);
+                });
+            }
+
+            // Function to delete user
+            function deleteUser(userId) {
+                fetch('http://localhost:9080/gnotes/api/v1/user/deletuser', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: `user_id=${userId}`
+                })
+                .then(response => {
+                    if (response.ok) {
+                        // User deleted successfully, update the UI
+                        fetchUsers();
+                    } else {
+                        // Handle error
+                        console.error('Error deleting user');
+                    }
+                })
+                .catch(error => console.error('Error deleting user:', error));
+            }
+
+            // Function to toggle user verification status
+            function toggleVerification(userId, isVerified) {
+                const action = isVerified ? 'desactiveruser' : 'activeuser';
+                fetch(`http://localhost:9080/gnotes/api/v1/user/${action}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: `user_id=${userId}`
+                })
+                .then(response => {
+                    if (response.ok) {
+                        // User verification status toggled successfully, update the UI
+                        fetchUsers();
+                    } else {
+                        // Handle error
+                        console.error(`Error ${action === 'activeuser' ? 'verifying' : 'deactivating'} user`);
+                    }
+                })
+                .catch(error => console.error(`Error ${action === 'activeuser' ? 'verifying' : 'deactivating'} user:`, error));
+            }
+
+            // Function to navigate to user page
+            function navigateToUserPage(userId) {
+                // Redirect to the new page with user ID as a query parameter
+                window.location.href = `userDetails.html?id=${userId}`;
+            }
+
+            // Fetch users and display them
+            fetchUsers();
+        });
+    </script>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

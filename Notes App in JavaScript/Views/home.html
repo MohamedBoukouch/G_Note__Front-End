@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<!-- Coding By CodingNepal - youtube.com/codingnepal -->
+<html lang="en" dir="ltr">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<!-- Boxicons -->
+	<link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
+	<!-- My CSS -->
+	<link rel="stylesheet" href="../style.css">
+
+	<title>AdminHub</title>
+</head>
+
+<body>
+
+
+    <div class="table-data">
+        <div class="order">
+            <div class="head">
+                <h3>Recent Orders</h3>
+                <i class='bx bx-search' ></i>
+                <i class='bx bx-filter' ></i>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>User</th>
+                        <th>Date Order</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <img src="../images/people.png">
+                            <p>John Doe</p>
+                        </td>
+                        <td>01-10-2021</td>
+                        <td><span class="status completed">Completed</span></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <img src="img/people.png">
+                            <p>John Doe</p>
+                        </td>
+                        <td>01-10-2021</td>
+                        <td><span class="status pending">Pending</span></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <img src="img/people.png">
+                            <p>John Doe</p>
+                        </td>
+                        <td>01-10-2021</td>
+                        <td><span class="status process">Process</span></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <img src="img/people.png">
+                            <p>John Doe</p>
+                        </td>
+                        <td>01-10-2021</td>
+                        <td><span class="status pending">Pending</span></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <img src="img/people.png">
+                            <p>John Doe</p>
+                        </td>
+                        <td>01-10-2021</td>
+                        <td><span class="status completed">Completed</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+  <!-- <div class="wrapper">
+    <ul id="notes-container"></ul>
+    <li class="add-box">
+      <div class="icon"><i class="uil uil-plus"></i></div>
+      <p>Add new note</p>
+    </li>
+  </div> -->
+
+  <!-- Success message container -->
+  <div id="success-container"></div>
+
+  <!-- Error message container -->
+  <div id="error-container"></div>
+
+  <!-- Popup box for adding a new note -->
+  <body>
+    <!-- <div class="popup-box" id="popupBox">
+        <div class="popup">
+            <div class="content">
+                <header>
+                    <p></p>
+                    <i class="uil uil-times"></i>
+                </header>
+                <form action="#" id="noteForm">
+                    <div class="row title">
+                        <label>Title</label>
+                        <input id="subject" type="text" spellcheck="false">
+                    </div>
+                    <div class="row description">
+                        <label>Description</label>
+                        <textarea id="body" spellcheck="false"></textarea>
+                    </div>
+                    <button id="updateButton">Update</button>
+                </form>
+            </div>
+        </div>
+    </div> -->
+
+  <div id="fetchedData">
+    <p id="responseData"><p>
+  </div>
+
+  <!-- <script>
+    document.getElementById("noteForm").addEventListener("submit", function(event) {
+      event.preventDefault(); // Prevent the default form submission
+
+      let subject = document.getElementById("subject").value;
+      let body = document.getElementById("body").value;
+      let user_id = 5;
+
+      let formData = new FormData();
+      formData.append("subject", subject);
+      formData.append("body", body);
+      formData.append("user_id", user_id);
+
+      fetch("http://localhost:9080/gnotes/api/v1/note/add", {
+          method: "POST",
+          body: new URLSearchParams(formData),
+          headers: {
+            "User-Agent": "Mozilla/5.0",
+            "Content-Type": "application/x-www-form-urlencoded"
+          }
+        })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error("Login failed. Please try again.");
+          }
+          return response.text(); // Convert response to text
+        })
+        .then(data => {
+          // Check the response data to determine user role
+          if (data.includes("true")) {
+            // If user is admin, display success message
+            document.getElementById("success-container").textContent = "Note added successfully!";
+            document.getElementById("success-container").style.display = "block";
+            // Hide the success message after a short delay
+            setTimeout(() => {
+              document.getElementById("success-container").style.display = "none";
+            }, 1500);
+          } else {
+            // If response is not recognized, display error message
+            document.getElementById("error-container").textContent = "Failed to add note.";
+            document.getElementById("error-container").style.display = "block";
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          // Display error message if there is an error in the fetch request
+          document.getElementById("error-container").textContent = "An error occurred.";
+          document.getElementById("error-container").style.display = "block";
+        });
+    });
+  </script> -->
+  <script>
+    document.getElementById("noteForm").addEventListener("submit", function(event) {
+      event.preventDefault(); // Prevent the default form submission
+
+    //   let subjectyyyyyyyyyyer_id", user_id);
+
+      fetch("http://localhost:9080/gnotes/api/v1/note/add", {
+          method: "POST",
+          body: new URLSearchParams(formData),
+          headers: {
+            "User-Agent": "Mozilla/5.0",
+            "Content-Type": "application/x-www-form-urlencoded"
+          }
+        })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error("Login failed. Please try again.");
+          }
+          return response.text(); // Convert response to text
+        })
+        .then(data => {
+          // Check the response data to determine user role
+          if (data.includes("true")) {
+            // If user is admin, display success message
+            document.getElementById("success-container").textContent = "Note added successfully!";
+            document.getElementById("success-container").style.display = "block";
+            // Hide the success message after a short delay
+            setTimeout(() => {
+              document.getElementById("success-container").style.display = "none";
+            }, 1500);
+          } else {
+            // If response is not recognized, display error message
+            document.getElementById("error-container").textContent = "Failed to add note.";
+            document.getElementById("error-container").style.display = "block";
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          // Display error message if there is an error in the fetch request
+          document.getElementById("error-container").textContent = "An error occurred.";
+          document.getElementById("error-container").style.display = "block";
+        });
+    });
+  </script>
+
+
+
+
+  <script src="../js/script_2.js"></script>
+</body>
+
+</html>
